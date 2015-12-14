@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+#draggables {
+	border: 1px solid black;
+	width: 800px;
+	height: 600px;
+}
+
+.draggable {
+	cursor: move;
+}
