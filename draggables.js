@@ -2,30 +2,74 @@ if (typeof(Draggables) === "undefined") {
 	Draggables = {};
 }
 
-Draggables.Entity = function(svg, labelText) {
+Draggables.Entity = function(svg, labelText, options) {
 	this.svg = svg;
 	// { transform: 'translate(x,y)' }
-	this.g = this.svg.group();
-	this.svg.circle(this.g, 100, 100, 75, {id: 'circle2', class_: 'grouped',
-		fill: 'yellow', stroke: 'black', strokeWidth: 3});
+	this.g = this.svg.group(options);
+	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
 	this.g.setAttributeNS(null, "onmousedown", "onMouseDown(evt)");
 	$(this.g).addClass('draggable');
-	this.connectors = 0;
+	this.connectors = [];
 };
 $.extend(Draggables.Entity.prototype, {
+	addConnector: function(connector) {
+		this.connectors.push(connector);
+		this.g.appendChild(connector.g);
+	}
 });
 
-Draggables.Connector = function(svg, parentEntity) {
+Draggables.Connector = function(svg, parentEntity, options) {
 	this.parentEntity = parentEntity;
 	this.svg = svg;
-	this.g = this.svg.group();
+	this.g = this.svg.group(options);
 	$(this.g).addClass('connector');
-	this.svg.circle(this.g, 100, 100, 10, {
-		fill: 'red', stroke: 'black', strokeWidth: 3});
-	this.parentEntity.elt.append(this.g);
-	this.from = this.to = null;
+	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
+	this.connection = null;
+	parentEntity.addConnector(this);
 };
-$.extend(Draggables.Connector.prototype, {});
+$.extend(Draggables.Connector.prototype, {
+});
 
-Draggables.Connection = function(from, to) {};
-$.extend(Draggables.Connection.prototype, {});
+Draggables.Connection = function(svg, from, to, options) {
+	this.svg = svg;
+	this.from = from;
+	this.to = to;
+	if (this.from && this.to) {
+		fromTransform = this.from.g.getScreenCTM();
+		toTransform = this.to.g.getScreenCTM();
+		this.g = this.svg.group(options);
+		/*
+		this.g = this.svg.group($.extend(options, {
+			transform: "matrix"
+		}));
+		*/
+		this.svg.line(this.g, fromTransform.e, fromTransform.f, toTransform.e, toTransform.f);
+	}
+};
+$.extend(Draggables.Connection.prototype, {
+	connectFrom: function(newFrom) {
+		if (this.from) {
+			this.disconnectFrom();
+		}
+		this.from = newFrom;
+		this.from.connection = this;
+	},
+	disconnectFrom: function() {
+		if (this.from) {
+			this.from.connection = null;
+			this.from = null;
+		}
+	},
+	connectTo: function(newTo) {
+		if (this.to) {
+			this.disconnectTo();
+		}
+		this.to = newTo;
+	},
+	disconnectTo: function() {
+		if (this.to) {
+			this.to.connection = null;
+			this.to = null;
+		}
+	}
+});
