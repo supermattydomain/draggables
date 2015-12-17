@@ -14,8 +14,10 @@
 					// transform: "scale(" + entityDiameter + ") translate(1 2)"
 					transform: "matrix(" + entityDiameter + " 0 0 " + entityDiameter + " 100 200)"
 				});
-				var e1c1 = new Draggables.Connector(svg, e1);
-				var e2c1 = new Draggables.Connector(svg, e2);
+				var e1c1 = new Draggables.Connector(svg);
+				var e2c1 = new Draggables.Connector(svg);
+				e1.addConnector(e1c1);
+				e2.addConnector(e2c1);
 				var con = new Draggables.Connection(svg, e1c1, e2c1);
 			}
 		});

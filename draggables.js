@@ -21,15 +21,13 @@ $.extend(Draggables.Entity.prototype, {
 	}
 });
 
-Draggables.Connector = function(svg, parentEntity, options) {
-	this.parentEntity = parentEntity;
+Draggables.Connector = function(svg, options) {
 	this.svg = svg;
 	options = $.extend(this.defaultOptions, options);
 	this.g = this.svg.group(options);
 	$(this.g).addClass('connector');
 	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
 	this.connection = null;
-	parentEntity.addConnector(this);
 };
 $.extend(Draggables.Connector.prototype, {
 	defaultOptions: {
