@@ -13,3 +13,9 @@
 .draggable .selected {
 	stroke: green;
 }
+
+.entity {
+	fill: blue;
+	stroke: black;
+	strokeWidth: 0.05;
+}

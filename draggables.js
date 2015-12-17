@@ -9,6 +9,7 @@ Draggables.Entity = function(svg, labelText, options) {
 	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
 	this.circle.setAttributeNS(null, "onmousedown", "onMouseDown(evt)");
 	$(this.circle).addClass('draggable');
+	$(this.g).addClass('entity');
 	this.connectors = [];
 };
 $.extend(Draggables.Entity.prototype, {
