@@ -50,7 +50,7 @@ function selectElement(evt) {
 	selectedElement.setAttributeNS(null, "onmouseout", "onMouseOut(evt)");
 	selectedElement.setAttributeNS(null, "onmouseup", "onMouseUp(evt)");
 	selectedElement.setAttributeNS(null, "onmouseclick", "onMouseClick(evt)");
-	$(selectedElement).addClass('selected');
+	$(selectedElement).addClass('selected').trigger("dragBegin");
 }
 
 function transformToString(tr) {
@@ -116,6 +116,7 @@ function moveElement(evt) {
 		currentX = evt.clientX;
 		currentY = evt.clientY;
 	}
+	$(selectedElement).addClass('selected').trigger("dragMove");
 }
 
 function deselectElement(evt) {
@@ -124,7 +125,7 @@ function deselectElement(evt) {
 		selectedElement.removeAttributeNS(null, "onmouseout");
 		selectedElement.removeAttributeNS(null, "onmouseup");
 		selectedElement.removeAttributeNS(null, "onmouseclick");
-		$(selectedElement).removeClass('selected');
+		$(selectedElement).removeClass('selected').trigger("dragEnd");
 		selectedElement = 0;
 	}
 }

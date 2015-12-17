@@ -3,12 +3,18 @@ if (typeof(Draggables) === "undefined") {
 }
 
 Draggables.Node = function(svg, labelText, options) {
+	var tthis = this;
 	this.svg = svg;
 	options = $.extend(this.defaultOptions, options);
 	this.g = this.svg.group(options);
 	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
 	this.circle.setAttributeNS(null, "onmousedown", "onMouseDown(evt)");
-	$(this.circle).addClass('draggable');
+	function updateConnectorPositions() {
+		$(tthis.connectors).each(function(i, connector) {
+			connector.updatePosition();
+		});
+	};
+	$(this.g).addClass('draggable').on("dragBegin", updateConnectorPositions).on("dragMove", updateConnectorPositions);
 	$(this.g).addClass('node');
 	this.connectors = [];
 };
@@ -28,54 +34,71 @@ Draggables.Connector = function(svg, options) {
 	this.g = this.svg.group(options);
 	$(this.g).addClass('connector');
 	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
-	this.connection = null;
+	this.edge = null;
 };
 $.extend(Draggables.Connector.prototype, {
 	defaultOptions: {
 		fill: 'red', stroke: 'black', strokeWidth: 0.05,
 		transform: "scale(0.25) translate(2)"
+	},
+	updatePosition: function() {
+		if (this.edge !== null) {
+			this.edge.updatePosition();
+		}
 	}
 });
 
 Draggables.Edge = function(svg, from, to, options) {
 	this.svg = svg;
-	this.from = from;
-	this.to = to;
+	this.connectFrom(from);
+	this.connectTo(to);
 	options = $.extend(this.defaultOptions, options);
-	if (this.from && this.to) {
-		fromTransform = this.from.g.getScreenCTM();
-		toTransform = this.to.g.getScreenCTM();
-		this.g = this.svg.group(options);
-		this.svg.line(this.g, fromTransform.e, fromTransform.f, toTransform.e, toTransform.f);
-	}
+	this.g = this.svg.group(options);
+	this.updatePosition();
 };
 $.extend(Draggables.Edge.prototype, {
 	defaultOptions: {
 		stroke: 'black', strokeWidth: 2
 	},
 	connectFrom: function(newFrom) {
-		if (this.from) {
-			this.disconnectFrom();
+		this.disconnectFrom();
+		if (newFrom) {
+			this.from = newFrom;
+			this.from.edge = this;
 		}
-		this.from = newFrom;
-		this.from.connection = this;
 	},
 	disconnectFrom: function() {
 		if (this.from) {
-			this.from.connection = null;
+			this.from.edge = null;
 			this.from = null;
 		}
 	},
 	connectTo: function(newTo) {
-		if (this.to) {
-			this.disconnectTo();
+		this.disconnectTo();
+		if (newTo) {
+			this.to = newTo;
+			this.to.edge = this;
 		}
-		this.to = newTo;
 	},
 	disconnectTo: function() {
 		if (this.to) {
-			this.to.connection = null;
+			this.to.edge = null;
 			this.to = null;
+		}
+	},
+	updatePosition: function() {
+		// console.log('Edge.updatePosition');
+		if (this.from && this.to) {
+			var fromTransform = this.from.g.getScreenCTM();
+			var toTransform = this.to.g.getScreenCTM();
+			if (this.line) {
+				this.line.setAttributeNS(null, 'x1', fromTransform.e);
+				this.line.setAttributeNS(null, 'y1', fromTransform.f);
+				this.line.setAttributeNS(null, 'x2', toTransform.e);
+				this.line.setAttributeNS(null, 'y2', toTransform.f);
+			} else {
+				this.line = this.svg.line(this.g, fromTransform.e, fromTransform.f, toTransform.e, toTransform.f);
+			}
 		}
 	}
 });
