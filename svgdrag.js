@@ -46,10 +46,11 @@ function selectElement(evt) {
 	// console.log("selected:", selectedElement, evt);
 	currentX = evt.clientX;
 	currentY = evt.clientY;
-	selectedElement.setAttributeNS(null, "onmousemove", "onMouseMove(evt)");
-	selectedElement.setAttributeNS(null, "onmouseout", "onMouseOut(evt)");
-	selectedElement.setAttributeNS(null, "onmouseup", "onMouseUp(evt)");
-	selectedElement.setAttributeNS(null, "onmouseclick", "onMouseClick(evt)");
+	// selectedElement.setAttributeNS(null, "onmousemove", "onMouseMove(evt)");
+	$(selectedElement).on("mousemove", onMouseMove);
+	$(selectedElement).on("mouseout", onMouseOut);
+	$(selectedElement).on("mouseup", onMouseUp);
+	$(selectedElement).on("mouseclick", onMouseClick);
 	$(selectedElement).addClass('selected').trigger("dragBegin");
 }
 
@@ -121,10 +122,10 @@ function moveElement(evt) {
 
 function deselectElement(evt) {
 	if (selectedElement !== 0) {
-		selectedElement.removeAttributeNS(null, "onmousemove");
-		selectedElement.removeAttributeNS(null, "onmouseout");
-		selectedElement.removeAttributeNS(null, "onmouseup");
-		selectedElement.removeAttributeNS(null, "onmouseclick");
+		$(selectedElement).on("mousemove");
+		$(selectedElement).on("mouseout");
+		$(selectedElement).on("mouseup");
+		$(selectedElement).on("mouseclick");
 		$(selectedElement).removeClass('selected').trigger("dragEnd");
 		selectedElement = 0;
 	}
