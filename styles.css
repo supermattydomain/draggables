@@ -9,3 +9,7 @@
 .draggable {
 	cursor: move;
 }
+
+.draggable .selected {
+	stroke: green;
+}
