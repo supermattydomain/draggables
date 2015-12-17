@@ -18,7 +18,7 @@
 				var n2c1 = new Draggables.Connector(svg);
 				n1.addConnector(n1c1);
 				n2.addConnector(n2c1);
-				var con = new Draggables.Connection(svg, n1c1, n2c1);
+				var e1 = new Draggables.Edge(svg, n1c1, n2c1);
 			}
 		});
 	});

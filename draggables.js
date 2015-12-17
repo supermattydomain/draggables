@@ -37,7 +37,7 @@ $.extend(Draggables.Connector.prototype, {
 	}
 });
 
-Draggables.Connection = function(svg, from, to, options) {
+Draggables.Edge = function(svg, from, to, options) {
 	this.svg = svg;
 	this.from = from;
 	this.to = to;
@@ -49,7 +49,7 @@ Draggables.Connection = function(svg, from, to, options) {
 		this.svg.line(this.g, fromTransform.e, fromTransform.f, toTransform.e, toTransform.f);
 	}
 };
-$.extend(Draggables.Connection.prototype, {
+$.extend(Draggables.Edge.prototype, {
 	defaultOptions: {
 		stroke: 'black', strokeWidth: 2
 	},
