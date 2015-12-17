@@ -2,17 +2,17 @@ if (typeof(Draggables) === "undefined") {
 	Draggables = {};
 }
 
-Draggables.Entity = function(svg, labelText, options) {
+Draggables.Node = function(svg, labelText, options) {
 	this.svg = svg;
 	options = $.extend(this.defaultOptions, options);
 	this.g = this.svg.group(options);
 	this.circle = this.svg.circle(this.g, 0, 0, 0.5);
 	this.circle.setAttributeNS(null, "onmousedown", "onMouseDown(evt)");
 	$(this.circle).addClass('draggable');
-	$(this.g).addClass('entity');
+	$(this.g).addClass('node');
 	this.connectors = [];
 };
-$.extend(Draggables.Entity.prototype, {
+$.extend(Draggables.Node.prototype, {
 	defaultOptions: {
 		fill: 'blue', stroke: 'black', strokeWidth: 0.05
 	},
